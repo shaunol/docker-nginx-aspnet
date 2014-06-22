@@ -7,9 +7,9 @@ ENV HOME /root
 WORKDIR ~/
 
 # Build deps
-RUN yum install -y \
-	pkgconfig \ 			# required for xsp
-	pcre-devel zlib-devel 	# required for nginx
+# required for xsp: pkgconfig
+# required for nginx: pcre-devel, zlib-devel
+RUN yum install -y pkgconfig pcre-devel zlib-devel
 
 # Install xsp, requires to provide fastcgi-mono-server for nginx to serve asp.net requests
 ENV PKG_CONFIG_PATH /usr/lib/pkgconfig
@@ -25,8 +25,9 @@ RUN git clone git://github.com/mono/xsp ~/xsp && \
 
 # fastcgi-mono-server is ready to start now, so create a directory for our single application environment and start it up
 ENV LD_LIBRARY_PATH /usr/lib
+# TODO: Use the init script for fast-cgi-monoserver
 RUN mkdir /usr/aspnet && \
-	/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 & # TODO: Use the init script..
+	/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 
 
 # nginx install
 RUN cd ~/ && \
