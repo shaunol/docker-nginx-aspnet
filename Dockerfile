@@ -27,7 +27,7 @@ RUN git clone git://github.com/mono/xsp ~/xsp && \
 ENV LD_LIBRARY_PATH /usr/lib
 # TODO: Use the init script for fast-cgi-monoserver
 RUN mkdir /usr/aspnet && \
-	/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 
+	/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 &
 
 # nginx install
 RUN cd ~/ && \
