@@ -9,7 +9,7 @@ WORKDIR ~/
 # Build deps
 RUN yum install -y && \
 	pkgconfig && \ 			# required for xsp
-	pcre-devel zlib devel 	# required for nginx
+	pcre-devel zlib-devel 	# required for nginx
 
 # Install xsp, requires to provide fastcgi-mono-server for nginx to serve asp.net requests
 ENV PKG_CONFIG_PATH /usr/lib/pkgconfig
