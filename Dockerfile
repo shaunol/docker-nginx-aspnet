@@ -26,7 +26,7 @@ RUN git clone git://github.com/mono/xsp ~/xsp && \
 # fastcgi-mono-server is ready to start now, so create a directory for our single application environment and start it up
 ENV LD_LIBRARY_PATH /usr/lib
 RUN mkdir /usr/aspnet && \
-	/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000
+	/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 & # TODO: Use the init script..
 
 # nginx install
 RUN cd ~/ && \
@@ -39,4 +39,16 @@ RUN cd ~/ && \
 	cd ~/ && \
 	rm -rf ./nginx-1.7.2/ ./nginx-1.7.2.tar.gz
 
-# do nginx configuration here and start it up
+# Download and load the sample MVC4 application
+RUN cd ~/ && \
+	wget --no-check-certificate https://github.com/shaunol/docker-nginx-aspnet/raw/master/HelloWorldMvc4-Deploy.tar.gz && \
+	tar -zxf HelloWorldMvc4-Deploy.tar.gz && \
+	mv ~/HelloWorldMvc4-Deploy/* /usr/aspnet/ && \
+	rm -rf ~/HelloWorldMvc4-Deploy/ ~/HelloWorldMvc4-Deploy.tar.gz
+
+# Configure nginx
+RUN wget --no-check-certificate https://raw.githubusercontent.com/shaunol/docker-nginx-aspnet/master/nginx-fastcgi_params.conf -O /usr/conf/nginx-fastcgi_params.conf && \
+	wget --no-check-certificate https://raw.githubusercontent.com/shaunol/docker-nginx-aspnet/master/nginx.conf -O /usr/conf/nginx.conf
+
+# Start nginx
+RUN /usr/sbin/nginx
