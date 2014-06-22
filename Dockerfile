@@ -23,6 +23,9 @@ RUN git clone git://github.com/mono/xsp ~/xsp && \
 	cd ~/ && \
 	rm -rf ~/xsp
 
+# Required environment variable to run fastcgi-mono-server
+ENV LD_LIBRARY_PATH /usr/lib
+
 # nginx install
 RUN cd ~/ && \
 	wget http://nginx.org/download/nginx-1.7.2.tar.gz && \
@@ -46,10 +49,4 @@ RUN cd ~/ && \
 RUN wget --no-check-certificate https://raw.githubusercontent.com/shaunol/docker-nginx-aspnet/master/nginx-fastcgi_params.conf -O /usr/conf/nginx-fastcgi_params.conf && \
 	wget --no-check-certificate https://raw.githubusercontent.com/shaunol/docker-nginx-aspnet/master/nginx.conf -O /usr/conf/nginx.conf
 
-# Start fastcgi-mono-server
-# TODO: Use the init script
-ENV LD_LIBRARY_PATH /usr/lib
-RUN /usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 &
-
-# Start nginx
-RUN /usr/sbin/nginx
+# TODO: Start fastcgi-mono-server and nginx automatically on startup and issue a CMD to allow easy running of the container in daemon mode 

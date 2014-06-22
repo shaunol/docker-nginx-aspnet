@@ -1,14 +1,23 @@
 docker-nginx-aspnet
 ==================
 
-A minimal CentOS 6.4 install Docker's official image with mono and nginx installed to serve a sample ASP.NET application.
+A minimal CentOS 6.4 install based on Docker's official image with mono and nginx installed to serve a sample ASP.NET application.
 
 This should just serve as an example of putting these tools together and not be used in production.
 
 Usage
 ==================
 
-`docker run -d -p 80:80 shaunol/nginx-aspnet`
+Start the container:
+`docker run -t -i -p 80:80 shaunol/nginx-aspnet /bin/bash`
+
+Once inside the containers' shell:
+
+Start fastcgi-mono-server: 
+`/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 &`
+
+Start nginx:
+`/usr/sbin/nginx`
 
 You should now be able to access the ASP.NET MVC4 sample page via http://docker-container-ip/
 
@@ -17,6 +26,8 @@ TODO
 
 It would be nice if this were actually able to be used in production.
 
+* Start fastcgi-mono-server and nginx automatically
+* Issue a CMD in the Dockerfile to easily run the container as a daemon
 * Sensible paths for everything (ie. support multiple applications)
 * Secure installations and runtime environments
 * Easy methods to maintain registered ASP.NET applications (nginx & fastcgi-mono-server configs)
