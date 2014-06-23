@@ -3,7 +3,7 @@ docker-nginx-aspnet
 
 A minimal CentOS 6.4 install based on Docker's official image with mono and nginx installed to serve a sample ASP.NET application.
 
-This should just serve as an example of putting these tools together and not be used in production.
+At the moment this package serves as an example of putting these tools together and should not be used in production.
 
 Usage
 ==================
@@ -26,28 +26,28 @@ TODO
 
 It would be nice if this were actually able to be used in production.
 
-* Start fastcgi-mono-server and nginx automatically
-* Issue a CMD in the Dockerfile to easily run the container as a daemon
-* Sensible paths for everything (ie. support multiple applications)
+* Use an init script for fastcgi-mono-server
+* Run nginx using the Dockerfile CMD command to run the container as a daemon
+* Use more sensible paths for everything (ie. support multiple applications)
 * Secure installations and runtime environments
-* Easy methods to maintain registered ASP.NET applications (nginx & fastcgi-mono-server configs)
+* Provide easy methods to maintain registered ASP.NET applications (nginx & fastcgi-mono-server configs)
 * Optimize configs with nice defaults
-* Possibly port to Ubuntu, I'm not sure CentOS gets the same love on Docker as Ubuntu does, so it may be more lightweight and updated more often
+* Investigate building mono using minimal flags to reduce output size - right now the entire image is 1GB, the base CentOS image is 300MB with mono consuming most of the rest
 
 Notes on mono & ASP.NET
 ==================
 
 The current build of mono used does not support ASP.NET MVC5.
 
-The only special consideration for deploying MVC4 applications, is to remove the Microsoft.Web.Infrastructure.dll folder from the bin directory after deployment, or not include it in deployment at all. Though it may be required for deployment to IIS.
+The only special consideration for deploying MVC4 applications is removing the Microsoft.Web.Infrastructure.dll file from the bin directory after deployment, or not include it in deployment at all. Though it may be required for deployment to IIS.
 
 Keeping my eye on [mono/mono PR#888](https://github.com/mono/mono/pull/888) which should bring some MVC5 support.
 
 Other notes
 ==================
 
-The HelloWorldMVC source code included is just the default ASP.NET MVC4 application (.NET Framework 4.0) from Visual Studio. I have simply removed all authentication and Entity Framework (it is not compatible with mono) code. 
+The HelloWorldMvc4 source code included is just the default ASP.NET MVC4 application (.NET Framework 4.0) from Visual Studio. I have simply removed authentication and Entity Framework as it is not compatible with mono. 
 
-I have also renamed Site.css to site.css because the default BundleConfig refers to the file in lowercase which doesn't usually matter in a Windows environment. 
+Site.css has been renamed to site.css due to the default BundleConfig referring to the file in lowercase which matters in Linux but no Windows.
 
-If you want to build this solution, you will need to enable NuGet package restore on the solution as I haven't included the packages directory.
+If you want to build HelloWorldMvc4 for some reason, you will need to enable NuGet package restore on it as I haven't included the packages directory.
