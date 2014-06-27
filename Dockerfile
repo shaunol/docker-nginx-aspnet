@@ -1,15 +1,11 @@
 # Base OS
-FROM shaunol/centos-mono:centos6.4-mono.afa2f52
+FROM shaunol/centos-mono:mono-mini
 MAINTAINER shaunol
-
-# Env setup
-ENV HOME /root
-WORKDIR /root
 
 # Build deps
 # required for xsp: pkgconfig
 # required for nginx: pcre-devel, zlib-devel
-RUN yum install -y pkgconfig pcre-devel zlib-devel
+RUN yum install -y git autoconf libtool pkgconfig pcre-devel zlib-devel tar wget
 
 # Install xsp, requires to provide fastcgi-mono-server for nginx to serve asp.net requests
 ENV PKG_CONFIG_PATH /usr/lib/pkgconfig
@@ -37,6 +33,10 @@ RUN cd /root && \
         cd /root/ && \
         rm -rf ./nginx-1.7.2/ ./nginx-1.7.2.tar.gz
 
+# Cleanup deps
+RUN echo "clean_requirements_on_remove=0" >> /etc/yum.conf && \
+    yum remove -y git autoconf libtool pcre-devel zlib-devel tar wget
+
 # Create a directory for our single application environment & load the sample MVC4 application
 ADD ./HelloWorldMvc4-Deploy.tar.gz /root/
 RUN mv /root/HelloWorldMvc4-Deploy /usr/aspnet
@@ -45,5 +45,5 @@ RUN mv /root/HelloWorldMvc4-Deploy /usr/aspnet
 ADD ./nginx-fastcgi_params.conf /usr/conf/nginx-fastcgi_params.conf
 ADD ./nginx.conf /usr/conf/nginx.conf
 
-# TODO: Start fastcgi-mono-server and nginx automatically on startup and issue a CMD to allow easy running of the container in daemon mode
+# TODO: Start fastcgi-mono-server and nginx automatically on startup and issue a CMD to allow easy running of the $
 # CMD ["/usr/sbin/nginx"]
