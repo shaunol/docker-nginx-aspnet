@@ -41,10 +41,13 @@ RUN echo "clean_requirements_on_remove=0" >> /etc/yum.conf && \
 ADD ./HelloWorldMvc4-Deploy.tar.gz /root/
 RUN mv /root/HelloWorldMvc4-Deploy /usr/aspnet
 
+# Copy install script
+ADD ./install.sh /usr/bin/customstart
+
+
 # Configure nginx
 ADD ./nginx-fastcgi_params.conf /usr/conf/nginx-fastcgi_params.conf
 ADD ./nginx.conf /usr/conf/nginx.conf
 
 # TODO: Start fastcgi-mono-server and nginx automatically on startup and issue a CMD to allow easy running of the $
-CMD ["/usr/bin/fastcgi-mono-server4 /applications=/:/usr/aspnet/ /socket=tcp:127.0.0.1:9000 &"]
-CMD ["/usr/sbin/nginx"]
+ENTRYPOINT ["/usr/bin/customstart"]
